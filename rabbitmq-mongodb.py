@@ -43,6 +43,8 @@ class MongoDBConsumer(object):
     EXCHANGE_TYPE = 'fanout'
     QUEUE = 'mongodb-storage'
     ROUTING_KEY = None
+    SENSORS_LWM2M = {'/3301/0': 'luminosity', '/3303/0': 'temperature', '/3304/0': 'humidity', '/3324/0': 'loudness',
+                    '/3325/0': 'dust', '/3330/0': 'ranging', '/3348/0': 'gesture'}
 
     def __init__(self, amqp_url, db_url):
         """Create a new instance of the consumer class, passing in the AMQP
@@ -281,8 +283,19 @@ class MongoDBConsumer(object):
         try:
             #parsing
             json_parsed = json.loads(body)
+            for i in json_parsed['val']['resources']:
+                if i['id'] == 5700 or i['id'] == 5547:
+                    eggId = str(json_parsed['ep'])
+                    variable = self.SENSORS_LWM2M[str(json_parsed['pth'])]
+                    if i['id'] == 5547:
+                        reading = str(i['value'])
+                    if i['id'] == 5700:
+                        reading = str(i['value'])
+                    timestampISO = str(json_parsed['ts'])
+            data_json = {'feature': variable, 'device':eggId, 'readings':reading, 'timestamp':timestampISO}
             #inserting
             self._db.deskegg_database.deskegg_collection.insert_one(json_parsed)
+            self._db.iotegg.measurements.insert_one(data_json)
         except Exception, e:
             print "Error Processing:" + str(e)
         self.acknowledge_message(basic_deliver.delivery_tag)
