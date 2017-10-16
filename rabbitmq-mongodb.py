@@ -326,7 +326,7 @@ class MongoDBConsumer(object):
 
         :param pika.frame.Method unused_frame: The Basic.CancelOk frame
 
-        """file to write log to
+        """
         print "RabbitMQ acknowledged the cancellation of the consumer"
         self.close_channel()
 
@@ -378,7 +378,7 @@ def main():
     args = parser.parse_args()
     if args.log:
         LOG_FILENAME = args.log
-    if args.id
+    if args.id:
         ID = args.id
     EXTRA = {'app_id': str(ID)}
 
