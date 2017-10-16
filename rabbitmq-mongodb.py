@@ -288,9 +288,9 @@ class MongoDBConsumer(object):
                     eggId = str(json_parsed['ep'])
                     variable = self.SENSORS_LWM2M[str(json_parsed['pth'])]
                     if i['id'] == 5547:
-                        reading = str(i['value'])
+                        reading = float(i['value'])
                     if i['id'] == 5700:
-                        reading = str(i['value'])
+                        reading = float(i['value'])
                     timestampISO = str(json_parsed['ts'])
             data_json = {'feature': variable, 'device':eggId, 'readings':reading, 'timestamp':timestampISO}
             #inserting
