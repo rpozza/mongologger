@@ -326,7 +326,7 @@ class MongoDBConsumer(object):
 
         :param pika.frame.Method unused_frame: The Basic.CancelOk frame
 
-        """
+        """file to write log to
         print "RabbitMQ acknowledged the cancellation of the consumer"
         self.close_channel()
 
@@ -371,21 +371,29 @@ class MongoDBConsumer(object):
 def main():
     # set up parsing log filename for multiple processes
     global LOG_FILENAME
+    ID = '0'
     parser = argparse.ArgumentParser(description="RabbitMQ to MongoDB Storage Logging Service")
     parser.add_argument("-l", "--log", help="file to write log to (default '" + LOG_FILENAME + "')")
+    parser.add_argument("-i", "--id", help="id of the file (default '" + ID + "')")
     args = parser.parse_args()
     if args.log:
         LOG_FILENAME = args.log
+    if args.id
+        ID = args.id
+    EXTRA = {'app_id': str(ID)}
 
     # Setting LOG options
     LOGGER = logging.getLogger(__name__)
     LOG_LEVEL = logging.INFO # setting log level to INFO but could be also "DEBUG" or "WARNING"
     LOGGER.setLevel(LOG_LEVEL)
     HANDLER = logging.handlers.TimedRotatingFileHandler(LOG_FILENAME, when="midnight", backupCount=3) # set where we're logging and how
-    LOG_FORMAT = ('%(asctime)s %(levelname)s %(filename)s %(name)s %(funcName)s %(lineno)d: %(message)s') # set format of logging
+    LOG_FORMAT = ('%(asctime)s %(levelname)s %(app_id)s %(name)s %(funcName)s %(lineno)d: %(message)s') # set format of logging
     FORMATTER = logging.Formatter(LOG_FORMAT)
     HANDLER.setFormatter(FORMATTER)
     LOGGER.addHandler(HANDLER)
+
+    LOGGER = logging.LoggerAdapter(LOGGER,EXTRA)
+
     sys.stdout = MyLogger(LOGGER, logging.INFO) # replace stdout and stderr with custom logger
     sys.stderr = MyLogger(LOGGER, logging.ERROR)
 
