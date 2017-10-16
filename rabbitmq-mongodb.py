@@ -232,7 +232,7 @@ class MongoDBConsumer(object):
         self.start_consuming()
 
     def start_consuming(self):
-        """This method sets up the consumer by first calling
+        """This method sets up the consumer by firs%(filename)st calling
         add_on_cancel_callback so that the object is notified if RabbitMQ
         cancels the consumer. It then issues the Basic.Consume RPC command
         which returns the consumer tag that is used to uniquely identify the
@@ -382,7 +382,7 @@ def main():
     LOG_LEVEL = logging.INFO # setting log level to INFO but could be also "DEBUG" or "WARNING"
     LOGGER.setLevel(LOG_LEVEL)
     HANDLER = logging.handlers.TimedRotatingFileHandler(LOG_FILENAME, when="midnight", backupCount=3) # set where we're logging and how
-    LOG_FORMAT = ('%(asctime)s %(levelname)s %(name)s %(funcName)s %(lineno)d: %(message)s') # set format of logging
+    LOG_FORMAT = ('%(asctime)s %(levelname)s %(filename)s %(name)s %(funcName)s %(lineno)d: %(message)s') # set format of logging
     FORMATTER = logging.Formatter(LOG_FORMAT)
     HANDLER.setFormatter(FORMATTER)
     LOGGER.addHandler(HANDLER)
