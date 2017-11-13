@@ -13,6 +13,7 @@ import pika
 
 import pymongo
 import arrow
+import datetime
 
 LOG_FILENAME = "/var/log/rabbitmq-mongodb.log"
 JSON_CONFIG_LOCATION = "/usr/local/bin/mongologger/myconfig.json"
@@ -293,7 +294,7 @@ class MongoDBConsumer(object):
                     if i['id'] == 5700:
                         reading = float(i['value'])
                     timestampISO = str(json_parsed['ts'])
-                    datemongo = arrow(timestampISO).datetime
+                    datemongo = arrow.get(timestampISO).datetime
             data_json = {'feature': variable, 'device':eggId, 'readings':reading, 'timestamp':datemongo}
             #inserting
             self._db.deskegg_database.deskegg_collection.insert_one(json_parsed)
